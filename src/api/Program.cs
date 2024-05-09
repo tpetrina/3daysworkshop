@@ -73,6 +73,8 @@ if (useHangfire)
         .AddHangfireServer();
 }
 
+builder.Services.AddScoped<IForecastProcessorService, ForecastProcessorService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -138,6 +140,13 @@ app.MapPost("/forecast/publish-random", async (IBus bus) =>
         new Bogus.DataSets.Address().City()
     ));
     return "Published";
+});
+app.MapPost("/forecast/process", () =>
+{
+    app.Logger.LogInformation("Processing");
+    var jobId = Guid.NewGuid().ToString("N");
+    BackgroundJob.Schedule<IForecastProcessorService>(svc => svc.ProcessForecastsAsync(jobId), DateTime.Now.AddSeconds(1));
+    return $"Enqueued {jobId}";
 });
 
 app.MapHealthChecks("/health");
