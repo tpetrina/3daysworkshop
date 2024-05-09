@@ -1,0 +1,94 @@
+# https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+
+defaultRules:
+  create: true
+  rules:
+    etcd: false
+    kubeScheduler: false
+
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+
+alertmanager:
+  enabled: true
+  config:
+    global:
+      resolve_timeout: 1m
+      slack_api_url: "https://hooks.slack.com/services/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"
+    route:
+      receiver: "slack-notifications"
+      # repeat_interval: 12h
+      routes:
+      - receiver: "slack-notifications"
+        matchers:
+        - alertname="ApiDown"
+        continue: false
+    receivers:
+    - name: "slack-notifications"
+      slack_configs:
+      - channel: "#spam"
+        send_resolved: true
+        title: "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
+        text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
+
+additionalPrometheusRulesMap:
+  rule-name:
+    groups:
+    - name: api-down
+      rules:
+      - alert: ApiDown
+        expr: sum(kube_pod_owner{namespace="workshop-3days"}) by (namespace) < 1
+        for: 30s
+        labels:
+          severity: 'critical'
+          alert_type: 'infrastructure'
+        annotations:
+          description: ' The Number of pods from the namespace {{ $labels.namespace }} is lower than the expected 1. '
+          summary: 'Pod in {{ $labels.namespace }} namespace down'
+
+## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+##
+grafana:
+  enabled: true
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - kind.grafana
+  persistence:
+    enabled: true
+    accessModes: ["ReadWriteOnce"]
+    size: 5Gi
+
+prometheusOperator:
+  enabled: true
+
+prometheus:
+  enabled: true
+  additionalServiceMonitors:
+  - name: "api"
+    selector:
+      matchExpressions:
+      - key: app
+        operator: In
+        values:
+        - api
+    namespaceSelector:
+      matchNames:
+      - "workshop-3days"
+    endpoints:
+    - interval: 15s
+      port: web
+      path: /metrics
+
+  # Persistence between deployments
+  storageSpec:
+    volumeClaimTemplate:
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
