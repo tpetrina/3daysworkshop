@@ -36,7 +36,10 @@ builder.Services
         return configure
             .Logging(l => l.Serilog())
             .Transport(t => t.UseRabbitMq(rabbitMqConnectionString, "ForecastQueue"))
-            .Routing(r => r.TypeBased().Map<ForecastEvent>("ForecastQueue"))
+            .Routing(r => r.TypeBased()
+                .Map<ForecastEvent>("ForecastQueue")
+                .Map<ForecastEvent2>("ForecastQueue")
+            )
         ;
     })
     .AddRebusHandler<ForecastHandler>();
@@ -85,10 +88,11 @@ app.MapPost("/forecast", (WeatherForecastEntity forecast, WeatherForecastContext
 });
 app.MapPost("/forecast/publish-random", async (IBus bus) =>
 {
-    await bus.Send(new ForecastEvent(
+    await bus.Send(new ForecastEvent2(
         DateTime.Now.AddDays(Random.Shared.Next(0, 10)),
         Random.Shared.Next(-20, 55),
-        summaries[Random.Shared.Next(summaries.Length)]
+        summaries[Random.Shared.Next(summaries.Length)],
+        new Bogus.DataSets.Address().City()
     ));
     return "Published";
 });
