@@ -12,6 +12,14 @@ run:
 kind-create:
 	kind create cluster --config infra/kind-config.yaml
 
+infra-db:
+	kubectl apply -f infra/postgresql-pvc.yaml
+	kubectl create namespace db || true
+	helm upgrade db bitnami/postgresql \
+		--install \
+		--namespace db \
+		--values infra/postgresql-values.yaml
+
 deploy-app:
 	kubectl apply -f manifests
 
