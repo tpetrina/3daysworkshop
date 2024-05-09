@@ -13,10 +13,12 @@ sealed class ForecastProcessorService(
     public async Task ProcessForecastsAsync(string jobId)
     {
         logger.LogInformation("Job {JobId}: Processing forecasts...", jobId);
+        PrometheusMetrics.ForecastProcessing.Inc();
     }
 
     public async Task ProcessForecastsAsync2(string jobId)
     {
         logger.LogInformation("Job {JobId}: Processing forecasts v2...", jobId);
+        PrometheusMetrics.ForecastProcessing.Inc();
     }
 }
