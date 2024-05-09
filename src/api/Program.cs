@@ -58,6 +58,12 @@ app.MapGet("/forecasts", (WeatherForecastContext context) =>
 {
     return context.Forecasts.ToList();
 });
+app.MapPost("/forecast", (WeatherForecastEntity forecast, WeatherForecastContext context) =>
+{
+    context.Forecasts.Add(forecast);
+    context.SaveChanges();
+    return forecast;
+});
 
 app.Run();
 
