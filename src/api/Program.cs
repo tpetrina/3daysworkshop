@@ -5,6 +5,7 @@ using Rebus.Bus;
 using Rebus.Config;
 using Rebus.Routing.TypeBased;
 using Serilog;
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,8 +28,16 @@ builder.Services.AddDbContext<WeatherForecastContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<WeatherForecastContext>();
+    .AddDbContextCheck<WeatherForecastContext>()
+    .AddRabbitMQ();
 
+builder.Services.AddSingleton<IConnection>(c =>
+{
+    return new ConnectionFactory()
+    {
+        Uri = new Uri(builder.Configuration.GetConnectionString("RabbitMq"))
+    }.CreateConnection();
+});
 builder.Services
     .AddRebus(configure =>
     {

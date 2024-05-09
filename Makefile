@@ -20,6 +20,11 @@ infra-db:
 		--namespace db \
 		--values infra/postgresql-values.yaml
 
+infra-rabbitmq:
+	helm upgrade --install rabbitmq bitnami/rabbitmq \
+		--set auth.password=RabbitMqPassword \
+		--set auth.erlangCookie=M8pbajEbtndUplgF
+
 deploy-app:
 	kubectl apply -f manifests
 
