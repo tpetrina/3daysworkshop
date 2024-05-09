@@ -33,6 +33,8 @@ internal sealed class ForecastHandler(
             });
         }
         context.SaveChanges();
+
+        PrometheusMetrics.ForecastHandled();
     }
 
     public async Task Handle(ForecastEvent2 message)
@@ -61,5 +63,7 @@ internal sealed class ForecastHandler(
             });
         }
         await context.SaveChangesAsync();
+
+        PrometheusMetrics.ForecastHandled();
     }
 }

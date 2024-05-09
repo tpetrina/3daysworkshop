@@ -30,10 +30,12 @@
     <PackageReference Include="Rebus.ServiceProvider" Version="10.1.2" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\messages\messages.csproj" />
+    <ProjectReference Include="..\servicedefaults\servicedefaults.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "messages", "messages\messag
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "publisher", "publisher\publisher.csproj", "{D49D27A3-0C80-42CC-9BD5-00E51845EFF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "apphost", "apphost\apphost.csproj", "{04FBD12D-0363-43C8-A6C1-086D2B0CB804}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "servicedefaults", "servicedefaults\servicedefaults.csproj", "{55056838-B365-4FF0-92E0-BB0E8C569F59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{D49D27A3-0C80-42CC-9BD5-00E51845EFF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D49D27A3-0C80-42CC-9BD5-00E51845EFF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D49D27A3-0C80-42CC-9BD5-00E51845EFF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04FBD12D-0363-43C8-A6C1-086D2B0CB804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04FBD12D-0363-43C8-A6C1-086D2B0CB804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04FBD12D-0363-43C8-A6C1-086D2B0CB804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04FBD12D-0363-43C8-A6C1-086D2B0CB804}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55056838-B365-4FF0-92E0-BB0E8C569F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55056838-B365-4FF0-92E0-BB0E8C569F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55056838-B365-4FF0-92E0-BB0E8C569F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55056838-B365-4FF0-92E0-BB0E8C569F59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

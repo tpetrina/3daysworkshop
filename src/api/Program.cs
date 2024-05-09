@@ -12,6 +12,8 @@ using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Logging.ClearProviders();
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
