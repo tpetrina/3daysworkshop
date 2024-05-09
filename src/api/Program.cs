@@ -6,6 +6,8 @@ using Rebus.Config;
 using Rebus.Routing.TypeBased;
 using Serilog;
 using RabbitMQ.Client;
+using Hangfire;
+using Hangfire.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +55,24 @@ builder.Services
     })
     .AddRebusHandler<ForecastHandler>();
 
+var hangfireConnectionString = builder.Configuration.GetConnectionString("HangfireConnection");
+var useHangfire = !string.IsNullOrEmpty(hangfireConnectionString);
+if (useHangfire)
+{
+    logger.Information("Adding Hangfire: " + hangfireConnectionString + ".");
+
+    builder.Services
+        .AddHangfire(configure =>
+        {
+            configure
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(b => b.UseNpgsqlConnection(hangfireConnectionString));
+        })
+        .AddHangfireServer();
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,6 +81,20 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
+}
+
+if (useHangfire)
+{
+    app.UseHangfireDashboard();
+    // app.UseHangfireDashboard("/hangfire", new DashboardOptions
+    // {
+    //     DashboardTitle = "Hangfire Dashboard",
+    //     PrefixPath = "/api",
+    //     Authorization = new[]
+    //     {
+    //             new AnonymousAuthorizationFilter()
+    //         }
+    // });
 }
 
 app.UseHttpsRedirection();
@@ -124,6 +158,8 @@ if (args.Length > 0)
 }
 else
 {
+
+    RecurringJob.AddOrUpdate("hello-world", () => Console.WriteLine("Hello World!"), Cron.Minutely);
     app.Run();
 }
 
