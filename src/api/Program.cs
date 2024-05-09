@@ -145,7 +145,14 @@ app.MapPost("/forecast/process", () =>
 {
     app.Logger.LogInformation("Processing");
     var jobId = Guid.NewGuid().ToString("N");
-    BackgroundJob.Schedule<IForecastProcessorService>(svc => svc.ProcessForecastsAsync(jobId), DateTime.Now.AddSeconds(1));
+    BackgroundJob.Schedule<IForecastProcessorService>(svc => svc.ProcessForecastsAsync2(jobId), DateTime.Now.AddMinutes(1));
+    return $"Enqueued {jobId}";
+});
+app.MapPost("/forecast/process2", () =>
+{
+    app.Logger.LogInformation("Processing");
+    var jobId = Guid.NewGuid().ToString("N");
+    BackgroundJob.Schedule<IForecastProcessorService>(svc => svc.ProcessForecastsAsync2(jobId), DateTime.Now.AddSeconds(1));
     return $"Enqueued {jobId}";
 });
 

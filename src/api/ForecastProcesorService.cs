@@ -3,6 +3,7 @@ namespace api;
 interface IForecastProcessorService
 {
     Task ProcessForecastsAsync(string jobId);
+    Task ProcessForecastsAsync2(string jobId);
 }
 
 sealed class ForecastProcessorService(
@@ -12,5 +13,10 @@ sealed class ForecastProcessorService(
     public async Task ProcessForecastsAsync(string jobId)
     {
         logger.LogInformation("Job {JobId}: Processing forecasts...", jobId);
+    }
+
+    public async Task ProcessForecastsAsync2(string jobId)
+    {
+        logger.LogInformation("Job {JobId}: Processing forecasts v2...", jobId);
     }
 }
