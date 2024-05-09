@@ -8,6 +8,7 @@ using Serilog;
 using RabbitMQ.Client;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +32,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<WeatherForecastContext>()
-    .AddRabbitMQ();
+    .AddRabbitMQ()
+    .ForwardToPrometheus();
 
 builder.Services.AddSingleton<IConnection>(c =>
 {
@@ -157,6 +159,7 @@ app.MapPost("/forecast/process2", () =>
 });
 
 app.MapHealthChecks("/health");
+app.MapMetrics("/metrics");
 
 if (args.Length > 0)
 {

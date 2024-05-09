@@ -23,6 +23,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
+    <PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="8.2.1" />
     <PackageReference Include="Rebus.RabbitMq" Version="9.3.0" />
     <PackageReference Include="Rebus.Serilog" Version="8.0.0" />
     <PackageReference Include="Rebus.ServiceProvider" Version="10.1.2" />
