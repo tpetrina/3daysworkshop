@@ -1,3 +1,5 @@
+using api;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,13 @@ var logger = new LoggerConfiguration()
     .CreateLogger();
 // Register Serilog
 builder.Logging.AddSerilog(logger);
+
+builder.Services.AddDbContext<WeatherForecastContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    logger.Information($"Adding DbContext: {connectionString}");
+    options.UseNpgsql(connectionString);
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -44,6 +53,11 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
+
+app.MapGet("/forecasts", (WeatherForecastContext context) =>
+{
+    return context.Forecasts.ToList();
+});
 
 app.Run();
 
