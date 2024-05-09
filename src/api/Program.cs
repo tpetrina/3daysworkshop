@@ -1,5 +1,8 @@
 using api;
 using Microsoft.EntityFrameworkCore;
+using Rebus.Bus;
+using Rebus.Config;
+using Rebus.Routing.TypeBased;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +27,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<WeatherForecastContext>();
+
+builder.Services
+    .AddRebus(configure =>
+    {
+        var rabbitMqConnectionString = builder.Configuration.GetConnectionString("RabbitMq");
+        return configure
+            .Logging(l => l.Serilog())
+            .Transport(t => t.UseRabbitMq(rabbitMqConnectionString, "ForecastQueue"))
+            .Routing(r => r.TypeBased().Map<ForecastEvent>("ForecastQueue"))
+        ;
+    })
+    .AddRebusHandler<ForecastHandler>();
 
 var app = builder.Build();
 
@@ -66,6 +81,15 @@ app.MapPost("/forecast", (WeatherForecastEntity forecast, WeatherForecastContext
     context.Forecasts.Add(forecast);
     context.SaveChanges();
     return forecast;
+});
+app.MapPost("/forecast/publish-random", async (IBus bus) =>
+{
+    await bus.Send(new ForecastEvent(
+        DateTime.Now.AddDays(Random.Shared.Next(0, 10)),
+        Random.Shared.Next(-20, 55),
+        summaries[Random.Shared.Next(summaries.Length)]
+    ));
+    return "Published";
 });
 
 app.MapHealthChecks("/health");
