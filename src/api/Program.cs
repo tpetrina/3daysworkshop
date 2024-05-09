@@ -28,10 +28,11 @@ builder.Services.AddHealthChecks()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
@@ -69,7 +70,24 @@ app.MapPost("/forecast", (WeatherForecastEntity forecast, WeatherForecastContext
 
 app.MapHealthChecks("/health");
 
-app.Run();
+if (args.Length > 0)
+{
+    switch (args[0])
+    {
+        case "--migrate":
+            {
+                app.Logger.LogInformation("Migrating database");
+                using var scope = app.Services.CreateScope();
+                using var context = scope.ServiceProvider.GetService<WeatherForecastContext>();
+                context?.Database.Migrate();
+                return;
+            }
+    }
+}
+else
+{
+    app.Run();
+}
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
