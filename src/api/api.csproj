@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
+    
+    <ContainerRepository>workshop-api</ContainerRepository>
+    <ContainerImageTags>latest;1.0.0</ContainerImageTags>
   </PropertyGroup>
 
   <ItemGroup>
