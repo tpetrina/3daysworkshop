@@ -25,6 +25,13 @@ infra-rabbitmq:
 		--set auth.password=RabbitMqPassword \
 		--set auth.erlangCookie=M8pbajEbtndUplgF
 
+infra-prom:
+	helm repo add prometheus https://prometheus-community.github.io/helm-charts
+	kubectl create namespace prometheus || true
+	helm upgrade --install prometheus prometheus/kube-prometheus-stack \
+		--namespace prometheus \
+		--values infra/prometheus.yaml
+
 deploy-app:
 	kubectl apply -f manifests
 
