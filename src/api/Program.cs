@@ -22,6 +22,8 @@ builder.Services.AddDbContext<WeatherForecastContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<WeatherForecastContext>();
 
 var app = builder.Build();
 
@@ -64,6 +66,8 @@ app.MapPost("/forecast", (WeatherForecastEntity forecast, WeatherForecastContext
     context.SaveChanges();
     return forecast;
 });
+
+app.MapHealthChecks("/health");
 
 app.Run();
 

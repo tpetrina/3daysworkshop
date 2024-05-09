@@ -22,9 +22,18 @@ spec:
       - name: api
         image: docker.io/library/workshop-api:latest
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
         ports:
           - name: http
             containerPort: 8080
+        env:
+          - name: CUSTOMCONNSTR_DefaultConnection
+            value: "Host=db-postgresql.db.svc.cluster.local; Port=5432; Database=app_db; Username=app1; Password=AppPassword"
 ---
 apiVersion: v1
 kind: Service
