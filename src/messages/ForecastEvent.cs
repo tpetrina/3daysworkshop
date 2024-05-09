@@ -1,3 +1,4 @@
-namespace api;
+namespace messages;
 
 public sealed record ForecastEvent(DateTime Date, int TemperatureC, string? Summary);
+
